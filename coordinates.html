@@ -2,6 +2,11 @@
 <html>
 
 <head>
+  <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous" />
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous" />
     <link href="styles.css" type="text/css" rel="stylesheet" />
 </head>
 
@@ -10,7 +15,7 @@
         X Coordinate
         <input id="xcod" type="number" placeholder="Enter X value"> Y Coordinate
         <input id="ycod" type="number" placeholder="Enter Y value">
-        <button id="btn" onclick="findCoordinatesWithRanking()">Enter</button>
+        <button id="btn" class="btn btn-primary" onclick="findCoordinatesWithRanking()">Enter</button>
     </div>
     <div id="result" style="display:none">
         Following are the closest coordinates as per Rank
@@ -45,7 +50,7 @@
     }
     loadDataFromServer();
 
-   
+
 
     function findCoordinatesWithRanking() {
         var xcod = document.getElementById('xcod').value;
@@ -54,9 +59,11 @@
         var y = parseInt(ycod);
         if (isNaN(x)) {
             alert('Invalid X Input');
+            return;
         }
         if (isNaN(y)) {
             alert("Invalid Y Input");
+            return;
         }
 
         var total = Math.pow(x, 2) + Math.pow(y, 2);
