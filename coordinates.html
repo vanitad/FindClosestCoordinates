@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link href="styles.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body>
+    <div>
+        X Coordinate
+        <input id="xcod" type="number" placeholder="Enter X value"> Y Coordinate
+        <input id="ycod" type="number" placeholder="Enter Y value">
+        <button id="btn" onclick="findCoordinatesWithRanking()">Enter</button>
+    </div>
+    <div id="result" style="display:none">
+        Following are the closest coordinates as per Rank
+        <ul id="closest"></ul>
+    </div>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
+    <script>
+    var coordinatesData = undefined;
+
+    function loadDataFromServer(callback) {
+        $.getJSON('coordinates.json', function(data) {
+            var massagedData = [];
+            for (var i = 0; i < data.length; i++) {
+                var c = data[i];
+                var coArr = c.value.split(',');
+                var d = {
+                    id: c.id,
+                    x: undefined,
+                    y: undefined,
+                    total: undefined
+                };
+                d.x = parseInt(coArr[0]);
+                d.y = parseInt(coArr[1]);
+                d.total = Math.pow(d.x, 2) + Math.pow(d.y, 2);
+                massagedData.push(d);
+            }
+            coordinatesData = massagedData;
+            if (callback) {
+                callback();
+            }
+        });
+    }
+    loadDataFromServer();
+
+   
+
+    function findCoordinatesWithRanking() {
+        var xcod = document.getElementById('xcod').value;
+        var ycod = document.getElementById('ycod').value;
+        var x = parseInt(xcod);
+        var y = parseInt(ycod);
+        if (isNaN(x)) {
+            alert('Invalid X Input');
+        }
+        if (isNaN(y)) {
+            alert("Invalid Y Input");
+        }
+
+        var total = Math.pow(x, 2) + Math.pow(y, 2);
+        var closest = [];
+        for (var i = 0; i < coordinatesData.length; i++) {
+            coordinatesData[i].diffTotal = Math.abs(total - coordinatesData[i].total);
+            closest.push(coordinatesData[i]);
+        }
+        var sortedClosest = closest.sort(function(a, b) {
+            if (a.diffTotal < b.diffTotal) {
+                return -1;
+            } else if (a.diffTotal > b.diffTotal) {
+                return 1;
+            } else {
+                return 0;
+            }
+
+        });
+
+        var closestRender = [];
+        for (var i = 0; i < sortedClosest.length; i++) {
+            closestRender.push("<li>" + (i + 1) +  " " + sortedClosest[i].id + " -> " + sortedClosest[i].x + ',' + sortedClosest[i].y + "</li>");
+        }
+
+        $("#closest").html(closestRender.join(""));
+        $("#result").show('slideup');
+    }
+    </script>
+</body>
+
+</html>
